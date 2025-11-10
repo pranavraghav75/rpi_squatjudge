@@ -18,8 +18,10 @@ while True:
     if not ret:
         break
 
-    landmarks = detector.get_landmarks(frame)
+    results, landmarks = detector.process(frame)
     if landmarks:
+        detector.draw_landmarks(frame, results)
+
         depth_ok = logic.check_depth(landmarks)
         lockout_ok = logic.check_lockout(landmarks)
 
@@ -34,6 +36,7 @@ while True:
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
     cv2.imshow("Squat Judge Prototype", frame)
+
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 

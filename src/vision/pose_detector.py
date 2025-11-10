@@ -9,17 +9,22 @@ class PoseDetector:
             min_tracking_confidence=min_tracking_conf
         )
         self.mp_draw = mp.solutions.drawing_utils
+        self.mp_styles = mp.solutions.drawing_styles
 
-    def get_landmarks(self, frame):
+    def process(self, frame):
+        """Run MediaPipe pose detection and return both results and landmarks."""
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = self.pose.process(rgb)
-        if not results.pose_landmarks:
-            return None
-        return results.pose_landmarks.landmark
+        if results.pose_landmarks:
+            landmarks = results.pose_landmarks.landmark
+            return results, landmarks
+        return None, None
 
-    def draw_landmarks(self, frame, landmarks):
+    def draw_landmarks(self, frame, results):
+        """Draw skeleton overlay."""
         self.mp_draw.draw_landmarks(
             frame,
-            mp.solutions.pose.PoseLandmark,
-            mp.solutions.pose.POSE_CONNECTIONS
+            results.pose_landmarks,
+            self.mp_pose.POSE_CONNECTIONS,
+            landmark_drawing_spec=self.mp_styles.get_default_pose_landmarks_style()
         )

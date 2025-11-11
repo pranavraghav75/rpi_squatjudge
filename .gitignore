@@ -5,3 +5,5 @@ venv/
 build/
 dist/
 *.log
+mov1.mov
+mov2.mov
